@@ -3,37 +3,38 @@
 ==============================================================================
 
              model  accuracy  precision  recall  f1_score  roc_auc  cv_mean
+           XGBoost    0.9900     0.9778  0.9167    0.9462   0.9986   0.9840
       RandomForest    0.9887     0.9704  0.9097    0.9391   0.9983   0.9851
       DecisionTree    0.9820     0.8926  0.9236    0.9078   0.9726   0.9817
 LogisticRegression    0.8953     0.4762  0.9028    0.6235   0.9614   0.8946
 
 ------------------------------------------------------------------------------
-BEST MODEL: RandomForest  (selected by highest F1)
+BEST MODEL: XGBoost  (selected by highest F1)
 ------------------------------------------------------------------------------
 Best hyperparameters:
-  n_estimators = 200
-  min_samples_split = 2
-  min_samples_leaf = 1
-  max_features = sqrt
-  max_depth = 12
-  class_weight = None
+  subsample = 0.9
+  n_estimators = 600
+  min_child_weight = 3
+  max_depth = 7
+  learning_rate = 0.03
+  colsample_bytree = 0.7
 
 Top features (by importance):
-  Income                     0.3519
-  Education                  0.1930
-  CCAvg                      0.1561
-  Family                     0.1083
-  CD Account                 0.0581
-  Age                        0.0387
-  Experience                 0.0377
-  Mortgage                   0.0346
-  CreditCard                 0.0083
-  Online                     0.0076
-  Securities Account         0.0057
+  Education                  0.2608
+  Income                     0.2409
+  Family                     0.1673
+  CD Account                 0.1185
+  CCAvg                      0.0760
+  Mortgage                   0.0359
+  CreditCard                 0.0249
+  Online                     0.0224
+  Securities Account         0.0185
+  Age                        0.0174
+  Experience                 0.0174
 
 Confusion matrix (test set):
                Predicted: No   Predicted: Yes
-  Actual: No         1352              4
-  Actual: Yes          13            131
+  Actual: No         1353              3
+  Actual: Yes          12            132
 
 ==============================================================================
