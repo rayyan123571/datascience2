@@ -1,0 +1,32 @@
+# Personal Loan Prediction — single source of truth for dependencies.
+# Install once at the project root:  pip install -r requirements.txt
+
+# Core data + ML
+pandas>=2.0
+numpy>=1.24
+scikit-learn>=1.3
+scipy>=1.10
+joblib>=1.3
+
+# Visualisation (notebook + dashboard)
+matplotlib>=3.7
+seaborn>=0.12
+
+# Streamlit web app
+streamlit>=1.30
+plotly>=5.18
+
+# Excel support (archive/ original dataset)
+openpyxl>=3.1
+
+# Notebook execution (only needed for the .ipynb)
+jupyter>=1.0
+notebook>=7.0
+
+# Optional: feature selection used in the notebook
+mlxtend>=0.22
+
+# Optional advanced models (advanced_models.py / shap_explainability.py)
+xgboost>=2.0
+lightgbm>=4.0
+shap>=0.44

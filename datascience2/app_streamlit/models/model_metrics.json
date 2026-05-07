@@ -1,0 +1,115 @@
+{
+  "winner": "RandomForest",
+  "feature_order": [
+    "Age",
+    "Experience",
+    "Income",
+    "Family",
+    "CCAvg",
+    "Education",
+    "Mortgage",
+    "Securities Account",
+    "CD Account",
+    "Online",
+    "CreditCard"
+  ],
+  "n_train": 3500,
+  "n_test": 1500,
+  "best_params": {
+    "n_estimators": 200,
+    "min_samples_split": 2,
+    "min_samples_leaf": 1,
+    "max_features": "sqrt",
+    "max_depth": 12,
+    "class_weight": null
+  },
+  "feature_importance": {
+    "Age": 0.038671784030946565,
+    "Experience": 0.037692564854632356,
+    "Income": 0.3519184197389841,
+    "Family": 0.10828281580141164,
+    "CCAvg": 0.15614571373562172,
+    "Education": 0.19303058517172825,
+    "Mortgage": 0.03459794469163975,
+    "Securities Account": 0.0056805738883639635,
+    "CD Account": 0.05805732726951567,
+    "Online": 0.007600662760742991,
+    "CreditCard": 0.008321608056412999
+  },
+  "all_models": {
+    "LogisticRegression": {
+      "accuracy": 0.8953333333333333,
+      "precision": 0.47619047619047616,
+      "recall": 0.9027777777777778,
+      "f1_score": 0.6235011990407674,
+      "roc_auc": 0.9613548836447066,
+      "confusion_matrix": [
+        [
+          1213,
+          143
+        ],
+        [
+          14,
+          130
+        ]
+      ],
+      "cv_mean": 0.8945714285714285,
+      "cv_std": 0.013504345483538838
+    },
+    "DecisionTree": {
+      "accuracy": 0.982,
+      "precision": 0.8926174496644296,
+      "recall": 0.9236111111111112,
+      "f1_score": 0.9078498293515358,
+      "roc_auc": 0.9726421665027861,
+      "confusion_matrix": [
+        [
+          1340,
+          16
+        ],
+        [
+          11,
+          133
+        ]
+      ],
+      "cv_mean": 0.9817142857142857,
+      "cv_std": 0.004276179870598803
+    },
+    "RandomForest": {
+      "accuracy": 0.9886666666666667,
+      "precision": 0.9703703703703703,
+      "recall": 0.9097222222222222,
+      "f1_score": 0.9390681003584229,
+      "roc_auc": 0.9982971771550311,
+      "confusion_matrix": [
+        [
+          1352,
+          4
+        ],
+        [
+          13,
+          131
+        ]
+      ],
+      "cv_mean": 0.9851428571428571,
+      "cv_std": 0.0032071349029490796
+    }
+  },
+  "accuracy": 0.9886666666666667,
+  "precision": 0.9703703703703703,
+  "recall": 0.9097222222222222,
+  "f1_score": 0.9390681003584229,
+  "roc_auc": 0.9982971771550311,
+  "cv_mean": 0.9851428571428571,
+  "cv_std": 0.0032071349029490796,
+  "confusion_matrix": [
+    [
+      1352,
+      4
+    ],
+    [
+      13,
+      131
+    ]
+  ]
+}
