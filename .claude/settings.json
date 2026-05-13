@@ -4,7 +4,17 @@
       "Bash(pip install *)",
       "Bash(python -c \"import seaborn, xgboost; print\\('seaborn', seaborn.__version__, 'xgboost', xgboost.__version__\\)\")",
       "Bash(python -c \"import seaborn,xgboost\")",
-      "Bash(python -c \"import seaborn,xgboost; print\\('OK', seaborn.__version__, xgboost.__version__\\)\")"
+      "Bash(python -c \"import seaborn,xgboost; print\\('OK', seaborn.__version__, xgboost.__version__\\)\")",
+      "Bash(\"C:/Users/Faizan/AppData/Local/Programs/Python/Python311/python.exe\" -m pip install xgboost --no-input --progress-bar off)",
+      "Bash(\"C:/Users/Faizan/AppData/Local/Programs/Python/Python311/python.exe\" -m pip install --index-url https://pypi.tuna.tsinghua.edu.cn/simple xgboost)",
+      "Bash(echo \"started PID=$!\")",
+      "Bash(find \"C:/Users/Faizan/AppData/Local/pip\" -name \"*xgboost*\" 2>/dev/null | head -5; find \"/c/Users/Faizan\" -name \"xgboost*.whl\" 2>/dev/null | head -5)",
+      "Read(//c/Users/Faizan/AppData/Local/pip/**)",
+      "Read(//c/Users/Faizan/**)",
+      "Bash(C:/Users/Faizan/AppData/Local/Programs/Python/Python311/python.exe -c ' *)",
+      "Bash(curl -s -o /dev/null -w \"%{http_code}\\\\n\" \"http://localhost:8765/\")",
+      "Bash(curl -s \"http://localhost:8765/_stcore/health\")",
+      "Bash(\"C:/Users/Faizan/AppData/Local/Programs/Python/Python311/python.exe\" \"c:/Users/Faizan/Desktop/datascience2/test_app.py\")"
     ]
   }
 }

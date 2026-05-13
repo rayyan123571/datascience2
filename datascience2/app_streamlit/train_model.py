@@ -43,6 +43,7 @@ from sklearn.metrics import (accuracy_score, classification_report,
 from sklearn.model_selection import (GridSearchCV, RandomizedSearchCV,
                                      StratifiedKFold, cross_val_score,
                                      train_test_split)
+from sklearn.neighbors import KNeighborsClassifier
 from sklearn.pipeline import Pipeline
 from sklearn.preprocessing import StandardScaler
 from sklearn.tree import DecisionTreeClassifier
@@ -129,7 +130,20 @@ def candidate_searches(cv: StratifiedKFold) -> Dict:
         rf_grid, n_iter=25, cv=cv, scoring="f1", n_jobs=-1,
         random_state=RANDOM_STATE)
 
-    # XGBoost (optional dependency)
+    # K-Nearest Neighbours — needs scaling, sensitive to k
+    knn_pipe = Pipeline([
+        ("scaler", StandardScaler()),
+        ("clf", KNeighborsClassifier()),
+    ])
+    knn_grid = {
+        "clf__n_neighbors": [3, 5, 7, 9, 11, 15, 21],
+        "clf__weights": ["uniform", "distance"],
+        "clf__p": [1, 2],  # Manhattan or Euclidean
+    }
+    out["KNN"] = GridSearchCV(
+        knn_pipe, knn_grid, cv=cv, scoring="f1", n_jobs=-1)
+
+    # XGBoost (optional dependency) — scale_pos_weight handles class imbalance
     if HAS_XGB:
         xgb_grid = {
             "n_estimators": [200, 400, 600],
@@ -138,6 +152,7 @@ def candidate_searches(cv: StratifiedKFold) -> Dict:
             "subsample": [0.7, 0.9, 1.0],
             "colsample_bytree": [0.7, 0.9, 1.0],
             "min_child_weight": [1, 3, 5],
+            "scale_pos_weight": [1, 5, 9],
         }
         out["XGBoost"] = RandomizedSearchCV(
             XGBClassifier(
