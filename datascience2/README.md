@@ -1,147 +1,118 @@
 # Bank Personal Loan Prediction
 
-Machine-learning project that predicts whether a bank customer will accept a personal-loan offer. Includes a trained Decision Tree, hyperparameter-tuning and explainability scripts, a Streamlit web app, and a Docker setup.
+Production-ready machine learning project for predicting whether a customer will accept a personal loan offer. The repository includes model training, evaluation, explainability, and an interactive Streamlit application.
 
----
+## Highlights
 
-## Quick start
+- End-to-end ML pipeline: EDA, preprocessing, model training, evaluation, and artifact persistence.
+- Multiple candidate models with model selection based on robust evaluation metrics.
+- Interactive Streamlit UI for prediction, model comparison, analytics, and business insights.
+- Docker support for reproducible local deployment.
 
-```bash
-# 1. Install dependencies (single requirements file)
-pip install -r requirements.txt
+## Project Overview
 
-# 2. Run the full pipeline (EDA + train all candidate models + pick best)
-python run_pipeline.py
+This project solves a binary classification problem:
 
-# 3. Launch the Streamlit web app
-streamlit run app_streamlit/app.py
-```
+- Target: `Personal Loan` (0 = not accepted, 1 = accepted)
+- Dataset size: 5,000 customer records
+- Feature count: 11 model input features
+- Typical split: stratified train/test split for class balance preservation
 
-Open http://localhost:8501 once Streamlit prints its URL. See [PROJECT_REPORT.md](PROJECT_REPORT.md) for the full write-up.
+The objective is to help a bank prioritize high-probability customers for personal loan campaigns.
 
----
+## Tech Stack
 
-## Problem statement
+- Python
+- Pandas, NumPy
+- Scikit-learn
+- XGBoost / LightGBM (optional, if installed)
+- SHAP (explainability)
+- Streamlit + Plotly
 
-Predict the binary `Personal Loan` target — whether a customer will accept a personal-loan marketing offer — from demographic and financial features.
+## Repository Structure
 
-| Attribute | Value |
-|-----------|-------|
-| Records | 5,000 customers |
-| Features used | 11 (ID and ZIP Code dropped) |
-| Target | `Personal Loan` (0 = no, 1 = yes) |
-| Class balance | 9.6% positive |
-| Train / test split | 70 / 30 (stratified) |
-
----
-
-## Features used by the model
-
-| Feature | Type | Description |
-|---|---|---|
-| Age | numeric | Customer's age in years |
-| Experience | numeric | Years of professional experience |
-| Income | numeric | Annual income in $1000s |
-| Family | ordinal | Number of family members (1–4) |
-| CCAvg | numeric | Average monthly credit-card spend in $1000s |
-| Education | ordinal | 1=Undergrad, 2=Graduate, 3=Advanced |
-| Mortgage | numeric | Mortgage amount in $1000s |
-| Securities Account | binary | Has investment securities account |
-| CD Account | binary | Has certificate of deposit |
-| Online | binary | Uses online banking |
-| CreditCard | binary | Has a credit card with the bank |
-
-`ID` and `ZIP Code` are intentionally excluded — they are not predictive and `ID` would leak per-row identity.
-
----
-
-## Models
-
-`train_model.py` trains **four** candidate algorithms (Logistic Regression, Decision Tree, Random Forest, and XGBoost if installed), each with cross-validated hyperparameter search, and persists the best one (chosen by F1 on the held-out test set).
-
-Last run picked **Random Forest**: accuracy 98.87%, F1 0.94, ROC-AUC 0.998.
-
-All metrics are saved to `app_streamlit/models/model_metrics.json` and shown live in the Streamlit app — no hardcoded numbers in the UI.
-
----
-
-## Repository layout
-
-```
+```text
 datascience2/
 ├── README.md
-├── PROJECT_REPORT.md                       # full report (problem → results)
-├── requirements.txt                        # single source of truth
-├── .gitignore
-├── run_pipeline.py                         # one-command runner: EDA + train
-├── personal-loan-prediction.ipynb          # original exploratory notebook
+├── PROJECT_REPORT.md
+├── requirements.txt
+├── run_pipeline.py
+├── personal-loan-prediction.ipynb
 ├── data/
 │   └── Bank_Personal_Loan_Modelling.csv
-├── archive/
-│   └── Bank_Personal_Loan_Modelling.xlsx   # original Excel source
-├── eda_images/                             # 12 PNGs produced by eda.py
 ├── reports/
-│   ├── PIPELINE_DIAGRAM.md
 │   ├── eda_summary.txt
 │   ├── model_comparison_summary.txt
 │   └── plots/
-│       ├── model_comparison.png
-│       ├── roc_curves.png
-│       └── confusion_matrices.png
 └── app_streamlit/
-    ├── app.py                  # Streamlit prediction UI
-    ├── dashboard_app.py        # Streamlit BI dashboard (separate app)
-    ├── eda.py                  # generates eda_images/*.png + summary
-    ├── train_model.py          # trains LR + DT + RF + XGBoost, picks best
-    ├── config.py               # constants, feature order, paths
-    ├── utils.py                # ModelLoader, PredictionEngine, validators
-    ├── advanced_models.py      # extra XGBoost / LightGBM CLI (optional)
-    ├── model_tuning.py         # GridSearchCV CLI on 3 baseline models
-    ├── shap_explainability.py  # SHAP plots CLI (optional)
-    ├── Dockerfile
-    ├── docker-compose.yml
+    ├── app.py
+    ├── dashboard_app.py
+    ├── config.py
+    ├── utils.py
+    ├── train_model.py
+    ├── model_tuning.py
+    ├── advanced_models.py
+    ├── shap_explainability.py
     └── models/
-        ├── best_model.pkl
-        ├── best_decision_tree_model.pkl    # alias of best_model.pkl
         └── model_metrics.json
 ```
 
----
+## Installation
 
-## Running the BI dashboard
+Use a virtual environment and install dependencies:
 
 ```bash
-cd app_streamlit
-streamlit run dashboard_app.py
+pip install -r requirements.txt
 ```
 
-Filterable charts over the dataset (income/age distributions, correlation heatmap, acceptance by education / family size).
+## Quick Start
 
----
-
-## Running with Docker
+Run the full pipeline:
 
 ```bash
-cd app_streamlit
+python run_pipeline.py
+```
+
+Launch the Streamlit app:
+
+```bash
+python -m streamlit run app_streamlit/app.py
+```
+
+Open `http://localhost:8501` in your browser.
+
+## Streamlit App Modules
+
+The main app includes:
+
+- Prediction workflow for customer-level scoring
+- Model comparison dashboard
+- Model details and feature-importance view
+- Data analytics page
+- Insights and recommendations page
+
+## Model Artifacts
+
+Trained model metadata and evaluation summaries are saved under:
+
+- `app_streamlit/models/model_metrics.json`
+
+Depending on training flow, serialized model files are also stored in `app_streamlit/models/`.
+
+## Docker (Optional)
+
+From the `app_streamlit/` directory:
+
+```bash
 docker compose up --build
 ```
 
-The compose file uses the project root as build context so that `requirements.txt` and `data/` are visible to the image.
+## Report
 
----
+Detailed methodology, experiments, and outcomes are documented in:
 
-## Optional: advanced models and SHAP
-
-```bash
-cd app_streamlit
-python advanced_models.py --data ../data/Bank_Personal_Loan_Modelling.csv
-python shap_explainability.py --data ../data/Bank_Personal_Loan_Modelling.csv
-```
-
-These produce comparison plots and SHAP explanation plots under `results/`.
-
----
+- `PROJECT_REPORT.md`
 
 ## License
 
-Educational and research use.
+This project is intended for educational and research use.

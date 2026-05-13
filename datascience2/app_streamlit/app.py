@@ -198,8 +198,7 @@ def render_sidebar(metrics: dict) -> str:
         st.markdown("### 🧭 Navigation")
         page = st.radio(
             "View",
-            ["🎯 Prediction", "📊 Model Comparison", "🤖 Model Details",
-             "📈 Data Analytics", "💡 Insights"],
+            ["Prediction", "Model Comparison", "Model Details", "Data Analytics", "Insights"],
             label_visibility="collapsed",
         )
 
@@ -240,68 +239,67 @@ def render_prediction_page(model, metrics: dict) -> None:
     st.markdown('<div class="section-header">👥 Customer Profile</div>',
                 unsafe_allow_html=True)
 
-    tab1, tab2, tab3 = st.tabs(["🧑 Demographics", "💰 Financials", "🏦 Banking"])
+    # Render inputs in a single stacked layout (Demographics -> Financials -> Banking)
+    st.markdown('### 🧑 Demographics')
+    col1, col2, col3 = st.columns(3)
+    with col1:
+        st.slider("Age (years)",
+                  int(DEMOGRAPHIC_FEATURES["Age"]["min"]),
+                  int(DEMOGRAPHIC_FEATURES["Age"]["max"]),
+                  key="Age",
+                  help=DEMOGRAPHIC_FEATURES["Age"]["description"])
+    with col2:
+        st.slider("Family Size",
+                  int(DEMOGRAPHIC_FEATURES["Family"]["min"]),
+                  int(DEMOGRAPHIC_FEATURES["Family"]["max"]),
+                  key="Family",
+                  help=DEMOGRAPHIC_FEATURES["Family"]["description"])
+    with col3:
+        st.selectbox("Education Level", options=[1, 2, 3],
+                     format_func=lambda x: EDUCATION_MAPPING.get(x, "Unknown"),
+                     key="Education",
+                     help=DEMOGRAPHIC_FEATURES["Education"]["description"])
+    st.slider("Years of Professional Experience",
+              int(PROFESSIONAL_FEATURES["Experience"]["min"]),
+              int(PROFESSIONAL_FEATURES["Experience"]["max"]),
+              key="Experience",
+              help=PROFESSIONAL_FEATURES["Experience"]["description"])
 
-    with tab1:
-        col1, col2, col3 = st.columns(3)
-        with col1:
-            st.slider("Age (years)",
-                      int(DEMOGRAPHIC_FEATURES["Age"]["min"]),
-                      int(DEMOGRAPHIC_FEATURES["Age"]["max"]),
-                      key="Age",
-                      help=DEMOGRAPHIC_FEATURES["Age"]["description"])
-        with col2:
-            st.slider("Family Size",
-                      int(DEMOGRAPHIC_FEATURES["Family"]["min"]),
-                      int(DEMOGRAPHIC_FEATURES["Family"]["max"]),
-                      key="Family",
-                      help=DEMOGRAPHIC_FEATURES["Family"]["description"])
-        with col3:
-            st.selectbox("Education Level", options=[1, 2, 3],
-                         format_func=lambda x: EDUCATION_MAPPING.get(x, "Unknown"),
-                         key="Education",
-                         help=DEMOGRAPHIC_FEATURES["Education"]["description"])
-        st.slider("Years of Professional Experience",
-                  int(PROFESSIONAL_FEATURES["Experience"]["min"]),
-                  int(PROFESSIONAL_FEATURES["Experience"]["max"]),
-                  key="Experience",
-                  help=PROFESSIONAL_FEATURES["Experience"]["description"])
+    st.markdown('### 💰 Financials')
+    col1, col2, col3 = st.columns(3)
+    with col1:
+        st.slider("Annual Income ($1000s)",
+                  float(FINANCIAL_FEATURES["Income"]["min"]),
+                  float(FINANCIAL_FEATURES["Income"]["max"]),
+                  step=1.0, key="Income",
+                  help=FINANCIAL_FEATURES["Income"]["description"])
+    with col2:
+        st.slider("Credit Card Avg Spend ($1000s)",
+                  float(FINANCIAL_FEATURES["CCAvg"]["min"]),
+                  float(FINANCIAL_FEATURES["CCAvg"]["max"]),
+                  step=0.1, key="CCAvg",
+                  help=FINANCIAL_FEATURES["CCAvg"]["description"])
+    with col3:
+        st.slider("Mortgage Amount ($1000s)",
+                  float(FINANCIAL_FEATURES["Mortgage"]["min"]),
+                  float(FINANCIAL_FEATURES["Mortgage"]["max"]),
+                  step=5.0, key="Mortgage",
+                  help=FINANCIAL_FEATURES["Mortgage"]["description"])
 
-    with tab2:
-        col1, col2, col3 = st.columns(3)
-        with col1:
-            st.slider("Annual Income ($1000s)",
-                      float(FINANCIAL_FEATURES["Income"]["min"]),
-                      float(FINANCIAL_FEATURES["Income"]["max"]),
-                      step=1.0, key="Income",
-                      help=FINANCIAL_FEATURES["Income"]["description"])
-        with col2:
-            st.slider("Credit Card Avg Spend ($1000s)",
-                      float(FINANCIAL_FEATURES["CCAvg"]["min"]),
-                      float(FINANCIAL_FEATURES["CCAvg"]["max"]),
-                      step=0.1, key="CCAvg",
-                      help=FINANCIAL_FEATURES["CCAvg"]["description"])
-        with col3:
-            st.slider("Mortgage Amount ($1000s)",
-                      float(FINANCIAL_FEATURES["Mortgage"]["min"]),
-                      float(FINANCIAL_FEATURES["Mortgage"]["max"]),
-                      step=5.0, key="Mortgage",
-                      help=FINANCIAL_FEATURES["Mortgage"]["description"])
-
-    with tab3:
-        bcol1, bcol2, bcol3, bcol4 = st.columns(4)
-        with bcol1:
-            st.checkbox("💼 Securities Account", key="_sec",
-                        help="Customer has an investment securities account")
-        with bcol2:
-            st.checkbox("🏛 CD Account", key="_cd",
-                        help="Customer has a certificate of deposit")
-        with bcol3:
-            st.checkbox("🌐 Online Banking", key="_online",
-                        help="Customer uses online banking")
-        with bcol4:
-            st.checkbox("💳 Credit Card", key="_cc",
-                        help="Customer has a credit card with the bank")
+    st.markdown('### 🏦 Banking')
+    bcol1, bcol2, bcol3, bcol4 = st.columns(4)
+    with bcol1:
+        st.checkbox("Securities Account", key="_sec",
+                    help="Customer has an investment securities account")
+    with bcol2:
+        st.checkbox("CD Account", key="_cd",
+                    help="Customer has a certificate of deposit")
+    with bcol3:
+        st.checkbox("Online Banking", key="_online",
+                    help="Customer uses online banking")
+    with bcol4:
+        st.checkbox("Credit Card", key="_cc",
+                    help="Customer has a credit card with the bank")
 
     # Bridge checkbox bool -> int
     st.session_state["Securities Account"] = int(st.session_state.get("_sec", False))
@@ -753,6 +751,16 @@ def render_insights_page(metrics: dict) -> None:
 
 # ----- main -----------------------------------------------------------------
 
+
+def render_top_nav() -> str | None:
+    labels = ["Prediction", "Model Comparison", "Model Details", "Data Analytics", "Insights"]
+    cols = st.columns(len(labels))
+    for i, lbl in enumerate(labels):
+        with cols[i]:
+            if st.button(lbl, key=f"nav_{i}"):
+                st.session_state["_top_nav"] = lbl
+    return st.session_state.get("_top_nav")
+
 def render_footer() -> None:
     st.markdown(
         """
@@ -769,7 +777,10 @@ def render_footer() -> None:
 def main() -> None:
     model, metrics = load_model_resource()
     render_hero(metrics)
+    top_choice = render_top_nav()
     page = render_sidebar(metrics)
+    if top_choice:
+        page = top_choice
 
     if "Prediction" in page:
         render_prediction_page(model, metrics)
