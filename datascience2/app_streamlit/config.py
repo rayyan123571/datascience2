@@ -11,8 +11,12 @@ APP_DESCRIPTION = (
 )
 
 _HERE = Path(__file__).parent
-MODEL_PATH = str(_HERE / "models" / "best_decision_tree_model.pkl")
-METRICS_PATH = str(_HERE / "models" / "model_metrics.json")
+_MODELS_DIR = _HERE / "models"
+# Prefer the modern filename; fall back to the legacy one if present.
+_PRIMARY = _MODELS_DIR / "best_model.pkl"
+_LEGACY  = _MODELS_DIR / "best_decision_tree_model.pkl"
+MODEL_PATH = str(_PRIMARY if _PRIMARY.exists() else _LEGACY)
+METRICS_PATH = str(_MODELS_DIR / "model_metrics.json")
 
 # Order MUST match training. See train_model.py: FEATURES.
 FEATURE_ORDER = [

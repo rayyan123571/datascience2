@@ -10,7 +10,11 @@
       "Bash(curl -s -o /dev/null -w \"health HTTP %{http_code}\\\\n\" http://localhost:8600/_stcore/health)",
       "Bash(curl -s -o /dev/null -w \"root   HTTP %{http_code}\\\\n\" http://localhost:8600/)",
       "Bash(pkill -f \"streamlit run app.py\")",
-      "Bash(python run_pipeline.py --skip-eda --skip-train)"
+      "Bash(python run_pipeline.py --skip-eda --skip-train)",
+      "Bash(\"C:/Users/Faizan/AppData/Local/Programs/Python/Python311/python.exe\" -c \"import xgboost; print\\('xgboost', xgboost.__version__\\)\")",
+      "PowerShell(Stop-Process -Id 3740,20232 -Force -ErrorAction SilentlyContinue)",
+      "PowerShell(Get-Process python -ErrorAction SilentlyContinue)",
+      "PowerShell(& \"C:/Users/Faizan/AppData/Local/Programs/Python/Python311/python.exe\" -m pip install xgboost 2>&1 | Out-File -Encoding utf8 \"C:/Users/Faizan/Desktop/datascience2/xgb_install.log\"; \"exit=$LASTEXITCODE\"; Get-Content \"C:/Users/Faizan/Desktop/datascience2/xgb_install.log\" -Tail 5)"
     ]
   }
 }
