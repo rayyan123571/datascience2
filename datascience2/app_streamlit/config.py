@@ -3,8 +3,8 @@
 import json
 from pathlib import Path
 
-APP_TITLE = "Bank Personal Loan Prediction"
-APP_SUBTITLE = "AI-Powered Loan Acceptance Prediction System"
+APP_TITLE = "Bank Loan Eligibility Console"
+APP_SUBTITLE = "Customer screening, model governance, and campaign prioritization"
 APP_DESCRIPTION = (
     "Predict whether a customer will accept a personal loan offer using a "
     "Decision Tree model trained on the Bank Personal Loan dataset."
@@ -81,17 +81,17 @@ ACCEPTANCE_THRESHOLD = 0.5
 SHOW_FEATURE_IMPORTANCE = True
 
 SAMPLE_PROFILES = {
-    "Conservative Profile": {
+    "Retail Starter": {
         "Age": 35, "Experience": 10, "Income": 50, "Family": 2, "CCAvg": 1.0,
         "Education": 1, "Mortgage": 0,
         "Securities Account": 0, "CD Account": 0, "Online": 0, "CreditCard": 0,
     },
-    "Moderate Profile": {
+    "Relationship Builder": {
         "Age": 45, "Experience": 20, "Income": 100, "Family": 3, "CCAvg": 3.0,
         "Education": 2, "Mortgage": 100,
         "Securities Account": 0, "CD Account": 0, "Online": 1, "CreditCard": 1,
     },
-    "Premium Profile": {
+    "Priority Affluent Customer": {
         "Age": 55, "Experience": 30, "Income": 180, "Family": 4, "CCAvg": 8.0,
         "Education": 3, "Mortgage": 300,
         "Securities Account": 1, "CD Account": 1, "Online": 1, "CreditCard": 1,

@@ -20,6 +20,20 @@ warnings.filterwarnings("ignore")
 
 DATA_PATH = Path(__file__).resolve().parent.parent / "data" / "Bank_Personal_Loan_Modelling.csv"
 
+PAGE_LABELS = {
+    "Loan Eligibility Review": "Loan Eligibility Review",
+    "Model Governance": "Model Governance",
+    "Model Details": "Model Details",
+    "Portfolio Analytics": "Portfolio Analytics",
+    "Business Insights": "Business Insights",
+}
+
+PROFILE_NOTES = {
+    "Retail Starter": "Lower engagement, modest income, and limited banking relationship.",
+    "Relationship Builder": "Balanced customer profile with moderate income and active relationship products.",
+    "Priority Affluent Customer": "High-value customer with strong income and deep product engagement.",
+}
+
 st.set_page_config(
     page_title=APP_TITLE,
     page_icon="🏦",
@@ -33,24 +47,61 @@ st.markdown(
     """
 <style>
     /* page */
-    .main .block-container { padding-top: 1.2rem; padding-bottom: 2rem; max-width: 1400px; }
+    .main .block-container { padding-top: 1rem; padding-bottom: 2rem; max-width: 1400px; }
     [data-testid="stHeader"] { background: transparent; }
+
+    :root {
+        --bank-navy: #0f172a;
+        --bank-blue: #1d4ed8;
+        --bank-cyan: #0891b2;
+        --bank-slate: #475569;
+        --bank-line: #dbe4f0;
+        --bank-soft: #f8fafc;
+        --bank-good: #16a34a;
+        --bank-warn: #d97706;
+        --bank-bad: #dc2626;
+    }
 
     /* hero card */
     .hero {
-        background: linear-gradient(135deg, #4F46E5 0%, #06B6D4 100%);
+        background: linear-gradient(135deg, #0f172a 0%, #1d4ed8 65%, #0891b2 100%);
         color: #fff;
-        padding: 1.5rem 2rem;
-        border-radius: 1rem;
-        margin-bottom: 1.25rem;
-        box-shadow: 0 12px 30px -10px rgba(79, 70, 229, 0.35);
+        padding: 1.35rem 1.75rem;
+        border-radius: 1.1rem;
+        margin-bottom: 1rem;
+        box-shadow: 0 14px 32px -12px rgba(15, 23, 42, 0.42);
     }
-    .hero h1 { margin: 0; font-size: 2rem; font-weight: 700; letter-spacing: -0.02em; }
-    .hero p  { margin: 0.35rem 0 0 0; opacity: 0.92; font-size: 1rem; }
+    .hero h1 { margin: 0; font-size: 2rem; font-weight: 700; letter-spacing: -0.03em; }
+    .hero p  { margin: 0.35rem 0 0 0; opacity: 0.9; font-size: 0.98rem; }
     .hero .pill {
         display: inline-block; padding: 0.3rem 0.75rem; border-radius: 999px;
         background: rgba(255,255,255,0.18); font-size: 0.82rem; margin-top: 0.6rem;
         backdrop-filter: blur(6px);
+    }
+
+    .workflow {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 0.75rem;
+        margin: 0.2rem 0 1rem;
+    }
+    .workflow-step {
+        background: #ffffff;
+        border: 1px solid var(--bank-line);
+        border-radius: 0.95rem;
+        padding: 0.85rem 1rem;
+        box-shadow: 0 1px 2px rgba(15, 23, 42, 0.04);
+    }
+    .workflow-step .step-title {
+        color: var(--bank-navy);
+        font-weight: 700;
+        font-size: 0.92rem;
+        margin-bottom: 0.2rem;
+    }
+    .workflow-step .step-desc {
+        color: var(--bank-slate);
+        font-size: 0.82rem;
+        line-height: 1.45;
     }
 
     /* section header */
@@ -60,7 +111,7 @@ st.markdown(
         display: flex; align-items: center; gap: 0.5rem;
     }
     .section-header::before {
-        content: ""; width: 4px; height: 1.1rem; background: #4F46E5;
+        content: ""; width: 4px; height: 1.1rem; background: #1d4ed8;
         border-radius: 2px; display: inline-block;
     }
 
@@ -80,14 +131,14 @@ st.markdown(
         width: 100%; padding: 0.7rem 1.5rem; font-size: 0.95rem; font-weight: 600;
         border-radius: 0.6rem; border: none; cursor: pointer;
         transition: transform 0.15s ease, box-shadow 0.15s ease, filter 0.15s ease;
-        background: linear-gradient(135deg, #4F46E5 0%, #06B6D4 100%);
+        background: linear-gradient(135deg, #1d4ed8 0%, #0891b2 100%);
         color: #fff !important;
-        box-shadow: 0 4px 12px -3px rgba(79, 70, 229, 0.45);
+        box-shadow: 0 4px 12px -3px rgba(29, 78, 216, 0.4);
     }
     div.stButton > button:hover { transform: translateY(-1px); filter: brightness(1.05); }
     div.stButton > button:active { transform: translateY(0); }
     div.stButton > button[kind="secondary"] {
-        background: #fff; color: #4F46E5 !important;
+        background: #fff; color: #1d4ed8 !important;
         border: 1.5px solid #C7D2FE; box-shadow: none;
     }
 
@@ -101,9 +152,39 @@ st.markdown(
         font-weight: 600; color: #475569; border: none;
     }
     .stTabs [aria-selected="true"] {
-        background: linear-gradient(135deg, #4F46E5 0%, #06B6D4 100%) !important;
+        background: linear-gradient(135deg, #1d4ed8 0%, #0891b2 100%) !important;
         color: #fff !important;
     }
+
+    .decision-card {
+        padding: 1rem 1.1rem;
+        border-radius: 1rem;
+        border: 1px solid var(--bank-line);
+        background: linear-gradient(180deg, #fff 0%, #f8fbff 100%);
+        box-shadow: 0 1px 2px rgba(15, 23, 42, 0.04);
+    }
+    .decision-card .headline { font-size: 1.2rem; font-weight: 800; color: var(--bank-navy); }
+    .decision-card .subtext { color: var(--bank-slate); font-size: 0.9rem; margin-top: 0.25rem; }
+    .decision-pill {
+        display: inline-block;
+        padding: 0.32rem 0.72rem;
+        border-radius: 999px;
+        font-size: 0.8rem;
+        font-weight: 700;
+        margin-right: 0.45rem;
+        margin-top: 0.45rem;
+    }
+    .decision-pill.good { background: #dcfce7; color: #166534; }
+    .decision-pill.warn { background: #fef3c7; color: #92400e; }
+    .decision-pill.bad { background: #fee2e2; color: #991b1b; }
+
+    .review-box {
+        background: var(--bank-soft);
+        border: 1px solid var(--bank-line);
+        border-radius: 0.95rem;
+        padding: 1rem;
+    }
+    .review-box ul { margin: 0.4rem 0 0 1.1rem; color: var(--bank-slate); }
 
     /* prediction result */
     .result-card {
@@ -119,6 +200,7 @@ st.markdown(
     section[data-testid="stSidebar"] { background: #F8FAFC; border-right: 1px solid #E2E8F0; }
     section[data-testid="stSidebar"] .stMetric { background: #fff; padding: 0.6rem 0.7rem;
                                                   border-radius: 0.55rem; border: 1px solid #E2E8F0; }
+    section[data-testid="stSidebar"] .stRadio label { font-size: 0.95rem; }
 
     /* footer */
     .footer { text-align: center; padding: 1.5rem 0 0.5rem; color: #94A3B8;
@@ -151,7 +233,7 @@ def load_dataset():
 
 # ----- helpers --------------------------------------------------------------
 
-def _seed_form_state(profile: dict | None = None) -> None:
+def _seed_form_state(profile: dict | None = None, *, force: bool = False) -> None:
     defaults = {
         "Age": 45, "Experience": 20, "Income": 75.0, "Family": 2,
         "CCAvg": 2.0, "Education": 1, "Mortgage": 0.0,
@@ -159,18 +241,47 @@ def _seed_form_state(profile: dict | None = None) -> None:
     }
     source = profile or defaults
     for k, v in source.items():
-        st.session_state[k] = v
+        if force or k not in st.session_state:
+            st.session_state[k] = v
     # Bridge keys for checkboxes
-    st.session_state["_sec"]    = bool(source.get("Securities Account", 0))
-    st.session_state["_cd"]     = bool(source.get("CD Account", 0))
-    st.session_state["_online"] = bool(source.get("Online", 0))
-    st.session_state["_cc"]     = bool(source.get("CreditCard", 0))
+    if force or "_sec" not in st.session_state:
+        st.session_state["_sec"] = bool(source.get("Securities Account", 0))
+    if force or "_cd" not in st.session_state:
+        st.session_state["_cd"] = bool(source.get("CD Account", 0))
+    if force or "_online" not in st.session_state:
+        st.session_state["_online"] = bool(source.get("Online", 0))
+    if force or "_cc" not in st.session_state:
+        st.session_state["_cc"] = bool(source.get("CreditCard", 0))
+
+
+def _reset_form_state() -> None:
+    _seed_form_state(force=True)
+
+
+def _load_sample_profile(profile_name: str) -> None:
+    _seed_form_state(SAMPLE_PROFILES[profile_name], force=True)
 
 
 def stat_card(label: str, value: str, delta: str = "") -> str:
     delta_html = f'<div class="delta">{delta}</div>' if delta else ""
     return (f'<div class="stat-card"><div class="label">{label}</div>'
             f'<div class="value">{value}</div>{delta_html}</div>')
+
+
+def business_decision(probability: float) -> tuple[str, str, str, str]:
+    if probability >= 0.75:
+        return "High Priority", "Branch call + personalized offer", "good", "Strong acceptance likelihood"
+    if probability >= 0.50:
+        return "Medium Priority", "Email + relationship manager follow-up", "warn", "Moderate acceptance likelihood"
+    return "Low Priority", "Nurture campaign only", "bad", "Low acceptance likelihood"
+
+
+def profile_stage_title(label: str) -> str:
+    return {
+        "Retail Starter": "Low-touch starter relationship",
+        "Relationship Builder": "Balanced relationship customer",
+        "Priority Affluent Customer": "Premium banking prospect",
+    }.get(label, label)
 
 
 # ----- header / sidebar -----------------------------------------------------
@@ -192,26 +303,54 @@ def render_hero(metrics: dict) -> None:
         unsafe_allow_html=True,
     )
 
+    st.markdown(
+        """
+        <div class="workflow">
+            <div class="workflow-step">
+                <div class="step-title">1. Customer Intake</div>
+                <div class="step-desc">Capture demographics, financial strength, and banking relationship in a guided flow.</div>
+            </div>
+            <div class="workflow-step">
+                <div class="step-title">2. Eligibility Review</div>
+                <div class="step-desc">Review the customer file before generating the model decision to mirror a bank approval desk.</div>
+            </div>
+            <div class="workflow-step">
+                <div class="step-title">3. Campaign Action</div>
+                <div class="step-desc">Use the result to prioritise branch calls, digital outreach, or low-touch nurturing.</div>
+            </div>
+        </div>
+        """,
+        unsafe_allow_html=True,
+    )
+
+    c1, c2, c3, c4 = st.columns(4)
+    c1.markdown(stat_card("Best Model", winner, "selected by F1"), unsafe_allow_html=True)
+    c2.markdown(stat_card("Test Accuracy", f"{acc:.2f}%", "held-out set"), unsafe_allow_html=True)
+    c3.markdown(stat_card("ROC-AUC", f"{auc:.2f}%", "discrimination power"), unsafe_allow_html=True)
+    c4.markdown(stat_card("Case Rate", "9.60%", "positive class"), unsafe_allow_html=True)
+
 
 def render_sidebar(metrics: dict) -> str:
     with st.sidebar:
         st.markdown("### 🧭 Navigation")
         page = st.radio(
             "View",
-            ["🎯 Prediction", "📊 Model Comparison", "🤖 Model Details",
-             "📈 Data Analytics", "💡 Insights"],
+            ["Loan Eligibility Review", "Model Governance", "Model Details",
+             "Portfolio Analytics", "Business Insights"],
             label_visibility="collapsed",
         )
 
         st.markdown("---")
-        st.markdown("### 👤 Sample Profiles")
+        st.markdown("### 👤 Customer Segments")
         profile_names = list(SAMPLE_PROFILES.keys())
-        selected = st.selectbox("Load a sample:", ["—"] + profile_names,
+        selected = st.selectbox("Load a segment:", ["—"] + profile_names,
                                 label_visibility="collapsed")
         if selected != "—":
-            if st.button("📥 Apply sample", use_container_width=True):
-                _seed_form_state(SAMPLE_PROFILES[selected])
-                st.rerun()
+            st.caption(profile_stage_title(selected))
+            st.caption(PROFILE_NOTES.get(selected, "Predefined customer segment for quick testing."))
+        if selected != "—":
+            st.button("📥 Load profile", use_container_width=True,
+                      on_click=_load_sample_profile, args=(selected,))
 
         st.markdown("---")
         st.markdown("### 📊 Best Model Scorecard")
@@ -237,10 +376,11 @@ def render_prediction_page(model, metrics: dict) -> None:
             _seed_form_state()
             break
 
-    st.markdown('<div class="section-header">👥 Customer Profile</div>',
+    st.markdown('<div class="section-header">👥 Customer Intake & Eligibility Review</div>',
                 unsafe_allow_html=True)
+    st.caption("Complete the customer file in stages, review the summary, and then generate the eligibility decision.")
 
-    tab1, tab2, tab3 = st.tabs(["🧑 Demographics", "💰 Financials", "🏦 Banking"])
+    tab1, tab2, tab3, tab4 = st.tabs(["1. Demographics", "2. Financial Profile", "3. Banking Relationship", "4. Review & Decision"])
 
     with tab1:
         col1, col2, col3 = st.columns(3)
@@ -268,6 +408,7 @@ def render_prediction_page(model, metrics: dict) -> None:
                   help=PROFESSIONAL_FEATURES["Experience"]["description"])
 
     with tab2:
+        st.markdown("##### Financial profile")
         col1, col2, col3 = st.columns(3)
         with col1:
             st.slider("Annual Income ($1000s)",
@@ -289,18 +430,19 @@ def render_prediction_page(model, metrics: dict) -> None:
                       help=FINANCIAL_FEATURES["Mortgage"]["description"])
 
     with tab3:
+        st.markdown("##### Banking relationship")
         bcol1, bcol2, bcol3, bcol4 = st.columns(4)
         with bcol1:
-            st.checkbox("💼 Securities Account", key="_sec",
+            st.checkbox("Securities Account", key="_sec",
                         help="Customer has an investment securities account")
         with bcol2:
-            st.checkbox("🏛 CD Account", key="_cd",
+            st.checkbox("CD Account", key="_cd",
                         help="Customer has a certificate of deposit")
         with bcol3:
-            st.checkbox("🌐 Online Banking", key="_online",
+            st.checkbox("Online Banking", key="_online",
                         help="Customer uses online banking")
         with bcol4:
-            st.checkbox("💳 Credit Card", key="_cc",
+            st.checkbox("Credit Card", key="_cc",
                         help="Customer has a credit card with the bank")
 
     # Bridge checkbox bool -> int
@@ -313,30 +455,77 @@ def render_prediction_page(model, metrics: dict) -> None:
 
     is_valid, errors = DataValidator.validate_all(features_dict)
     if not is_valid:
-        for err in errors:
-            st.warning(f"⚠ {err}")
+        with tab4:
+            st.warning("Please correct the following items before generating the decision.")
+            for err in errors:
+                st.warning(f"⚠ {err}")
         return
 
-    st.markdown("")
-    bcol1, bcol2, _ = st.columns([1, 1, 3])
-    with bcol1:
-        predict_button = st.button("🚀 Predict Loan Acceptance", use_container_width=True)
-    with bcol2:
-        if st.button("🔄 Reset Form", use_container_width=True, type="secondary"):
-            _seed_form_state()
-            st.rerun()
+    with tab4:
+        review_cols = st.columns([1.25, 1])
+        with review_cols[0]:
+            st.markdown('<div class="review-box">', unsafe_allow_html=True)
+            st.markdown("**Customer file review**")
+            review_table = pd.DataFrame([
+                ("Age", f"{features_dict['Age']} years"),
+                ("Experience", f"{features_dict['Experience']} years"),
+                ("Income", f"${features_dict['Income']:.0f}K"),
+                ("Family", f"{int(features_dict['Family'])} members"),
+                ("CCAvg", f"${features_dict['CCAvg']:.2f}K/month"),
+                ("Education", EDUCATION_MAPPING.get(int(features_dict['Education']), "Unknown")),
+                ("Mortgage", f"${features_dict['Mortgage']:.0f}K"),
+                ("Securities Account", "Yes" if features_dict["Securities Account"] else "No"),
+                ("CD Account", "Yes" if features_dict["CD Account"] else "No"),
+                ("Online Banking", "Yes" if features_dict["Online"] else "No"),
+                ("Credit Card", "Yes" if features_dict["CreditCard"] else "No"),
+            ], columns=["Field", "Value"])
+            st.dataframe(review_table, use_container_width=True, hide_index=True)
+            st.markdown("</div>", unsafe_allow_html=True)
+
+        with review_cols[1]:
+            st.markdown("**Decision preview**")
+            analysis = RiskAnalysis.analyze_risk_factors(features_dict)
+            segment_score = analysis["score"]
+            priority, action, badge_class, summary_text = business_decision(0.5)
+            if segment_score >= 45:
+                priority, action, badge_class, summary_text = business_decision(0.8)
+            elif segment_score >= 20:
+                priority, action, badge_class, summary_text = business_decision(0.6)
+            else:
+                priority, action, badge_class, summary_text = business_decision(0.25)
+            st.markdown(
+                f"""
+                <div class="decision-card">
+                    <div class="headline">{priority}</div>
+                    <div class="subtext">{summary_text}</div>
+                    <div class="decision-pill {badge_class}">{action}</div>
+                    <div class="decision-pill {badge_class}">Rule-based pre-screen</div>
+                </div>
+                """,
+                unsafe_allow_html=True,
+            )
+            st.markdown("<br>", unsafe_allow_html=True)
+            st.info("Review this summary, then press the decision button to run the trained model.")
+
+        bcol1, bcol2 = st.columns([1, 1])
+        with bcol1:
+            predict_button = st.button("Generate Eligibility Decision", use_container_width=True)
+        with bcol2:
+            st.button("Reset Customer File", use_container_width=True, type="secondary",
+                      on_click=_reset_form_state)
 
     if predict_button:
         engine = PredictionEngine(model, FEATURE_ORDER)
         features_df = engine.prepare_features(features_dict)
         prediction, probability = engine.predict(features_df)
 
-        st.markdown('<div class="section-header">🎯 Prediction Result</div>',
+        st.markdown('<div class="section-header">🎯 Eligibility Decision</div>',
                     unsafe_allow_html=True)
         text, color = ResultFormatter.get_prediction_text(prediction)
         confidence = probability if prediction == 1 else 1 - probability
+        priority, action, badge_class, summary_text = business_decision(probability)
 
-        emoji = "✅" if prediction == 1 else "🚫"
+        emoji = "✅" if prediction == 1 else "◻"
         st.markdown(
             f"""
             <div class="result-card" style="--accent: {color};">
@@ -349,6 +538,11 @@ def render_prediction_page(model, metrics: dict) -> None:
             """,
             unsafe_allow_html=True,
         )
+
+        c1, c2, c3 = st.columns(3)
+        c1.markdown(stat_card("Campaign Priority", priority, summary_text), unsafe_allow_html=True)
+        c2.markdown(stat_card("Recommended Action", action, "next best step"), unsafe_allow_html=True)
+        c3.markdown(stat_card("Decision Basis", "Model + Rules", f"score {RiskAnalysis.analyze_risk_factors(features_dict)['score']}"), unsafe_allow_html=True)
 
         # Probability gauge
         col_g, col_m = st.columns([2, 3])
@@ -436,7 +630,7 @@ def render_prediction_page(model, metrics: dict) -> None:
 # ----- model comparison page ------------------------------------------------
 
 def render_comparison_page(metrics: dict) -> None:
-    st.markdown('<div class="section-header">🏆 Model Comparison Dashboard</div>',
+    st.markdown('<div class="section-header">🏆 Model Governance Dashboard</div>',
                 unsafe_allow_html=True)
 
     all_models = metrics.get("all_models", {})
@@ -641,7 +835,7 @@ def render_model_info_page(model, metrics: dict) -> None:
 # ----- data analytics page --------------------------------------------------
 
 def render_data_analytics_page() -> None:
-    st.markdown('<div class="section-header">📈 Dataset Explorer</div>',
+    st.markdown('<div class="section-header">📈 Portfolio Analytics Workspace</div>',
                 unsafe_allow_html=True)
     df = load_dataset()
     if df is None:
@@ -703,7 +897,7 @@ def render_data_analytics_page() -> None:
 # ----- insights page --------------------------------------------------------
 
 def render_insights_page(metrics: dict) -> None:
-    st.markdown('<div class="section-header">💡 Insights & Business Recommendations</div>',
+    st.markdown('<div class="section-header">💡 Insights & Campaign Strategy</div>',
                 unsafe_allow_html=True)
 
     importance = metrics.get("feature_importance", {})
@@ -757,7 +951,7 @@ def render_footer() -> None:
     st.markdown(
         """
         <div class="footer">
-            🏦 Bank Personal Loan Prediction · Trained on the
+            Bank Loan Eligibility Console · Trained on the
             <em>Bank Personal Loan Modelling</em> dataset ·
             Logistic Regression · Decision Tree · Random Forest · XGBoost · KNN
         </div>
@@ -771,15 +965,15 @@ def main() -> None:
     render_hero(metrics)
     page = render_sidebar(metrics)
 
-    if "Prediction" in page:
+    if "Loan Eligibility Review" in page:
         render_prediction_page(model, metrics)
-    elif "Comparison" in page:
+    elif "Model Governance" in page:
         render_comparison_page(metrics)
-    elif "Details" in page:
+    elif "Model Details" in page:
         render_model_info_page(model, metrics)
-    elif "Analytics" in page:
+    elif "Portfolio Analytics" in page:
         render_data_analytics_page()
-    elif "Insights" in page:
+    elif "Business Insights" in page:
         render_insights_page(metrics)
 
     render_footer()
